@@ -58,9 +58,9 @@ if __name__ == '__main__':
     logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
 
     ser = serial.Serial(
-        port=args.device,
-        baudrate=9600
+        port = args.device,
+        baudrate = 9600
     )
 
-    ser.write( '{data}\r\n'.format( data = payload ) )
+    ser.write( '{data}\r\n'.format( data = payload.__str__() ) )
     ser.close()
