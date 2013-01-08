@@ -8,7 +8,7 @@ install-pyserial:
 	curl $(PYSERIAL_URL) | tar -xz;\
 	cd $(PYSERIAL_DIR); sudo python setup.py install;\
 
-create-log-file:
+create-log-dir:
 	sudo mkdir /var/log/$(APP_NAME);\
-	sudo chown pi:users /var/log/$(APP_NAME);\
+	sudo chown pi:pi /var/log/$(APP_NAME);\
 

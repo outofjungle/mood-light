@@ -1,7 +1,19 @@
 #! /usr/bin/env python
-import serial, urllib2, json, ConfigParser, argparse
+import serial
+import urllib2
+import json
+import ConfigParser
+import argparse
+import logging
+import os
 
 if __name__ == '__main__':
+
+    logging.basicConfig(
+        filename='/var/log/mood-light/{name}.log'.format( name = os.path.splitext(os.path.basename(__file__))[0] ),
+        format='%(asctime)s %(levelname)s: %(message)s',
+        level=logging.DEBUG
+    )
 
     parser = argparse.ArgumentParser(
         description='Script to fetch Cosm feed and push to serial port'
@@ -15,13 +27,21 @@ if __name__ == '__main__':
         dest='config'
     )
 
+    parser.add_argument(
+        '-d', '--device',
+        help='device name',
+        type=str,
+        required=True,
+        dest='device'
+    )
+
     args = parser.parse_args()
     config = ConfigParser.ConfigParser()
     config.readfp( args.config )
 
-    API_KEY = config.get('cosm', 'API_KEY')
-    FEED = config.get('cosm', 'FEED_ID')
-    API_URL = 'http://api.cosm.com/v2/feeds/{feed}.json' .format(feed = FEED)
+    API_KEY = config.get( 'cosm', 'API_KEY' )
+    FEED = config.get( 'cosm', 'FEED_ID' )
+    API_URL = 'http://api.cosm.com/v2/feeds/{feed}.json'.format(feed = FEED)
 
     request = urllib2.Request( API_URL )
     request.add_header( 'X-ApiKey', API_KEY )
@@ -35,4 +55,12 @@ if __name__ == '__main__':
 
     payload = ','.join( payload )
 
-    print payload
+    logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
+
+    ser = serial.Serial(
+        port=args.device,
+        baudrate=9600
+    )
+
+    ser.write( '{data}\r\n'.format( data = payload ) )
+    ser.close()
