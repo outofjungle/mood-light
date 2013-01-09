@@ -6,6 +6,7 @@ import ConfigParser
 import argparse
 import logging
 import os
+import time
 
 if __name__ == '__main__':
 
@@ -59,8 +60,13 @@ if __name__ == '__main__':
 
     ser = serial.Serial(
         port = args.device,
-        baudrate = 9600
+        baudrate = 9600,
+        parity = serial.PARITY_NONE,
+        stopbits = serial.STOPBITS_ONE,
+        bytesize = serial.EIGHTBITS
     )
 
-    ser.write( '{data}\r\n'.format( data = payload.__str__() ) )
+    time.sleep(1)
+
+    ser.write( '{data}\r\n'.format( data = payload ) )
     ser.close()
