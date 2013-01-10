@@ -1,11 +1,12 @@
+#include <string.h>
 #include <SoftwareSerial.h>
 
 SoftwareSerial xbee(11, 12); // RX, TX
 
 int chr = -1;
 char buffer[256] = "";
-char match[6] = "$COSM";
-int index[16];
+char match[] = "$COSM";
+unsigned int index[64];
 
 int buffer_count = 0;
 int match_count=0;
@@ -15,7 +16,7 @@ void setup() {
     xbee.begin(9600);
     Serial.begin(9600);
 }
- 
+
 void loop() {
      
     chr = xbee.read();
@@ -40,8 +41,8 @@ void loop() {
                 x++;
             }
 
-            for ( int i=x; i<(x+6); i++ ){                            
-                if (buffer[i]==match[i - x]){
+            for ( int i=0; i<strlen(match); i++ ){
+                if (buffer[i+x]==match[i]){
                     match_count++;
                 }
             }
@@ -49,6 +50,10 @@ void loop() {
             if( match_count == 5 ){
                 for (int i=0; i<256; i++){
                     if (buffer[i]==','){
+                        index[index_count]=i;
+                        index_count++;
+                    }
+                    if (buffer[i]=='*'){
                         index[index_count]=i;
                         index_count++;
                     }
