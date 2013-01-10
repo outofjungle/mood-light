@@ -8,6 +8,15 @@ import logging
 import os
 import time
 
+def checksum(sentence):
+
+    checksum = 0
+    for s in sentence.strip():
+        checksum ^= ord(s)
+
+    return checksum
+
+
 if __name__ == '__main__':
 
     logging.basicConfig(
@@ -50,13 +59,11 @@ if __name__ == '__main__':
 
     data = json.loads( response.read() )
 
-    payload = [ '$COSM', FEED.__str__() ]
+    payload = [ 'COSM', FEED.__str__() ]
     for datastream in  data['datastreams']:
         payload.append( '{key},{value}'.format( key = datastream['id'], value = datastream['current_value'] ) )
 
     payload = ','.join( payload )
-
-    logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
 
     ser = serial.Serial(
         port = args.device,
@@ -68,5 +75,7 @@ if __name__ == '__main__':
 
     time.sleep(1)
 
-    ser.write( '{data}\r\n'.format( data = payload ) )
+    logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
+
+    ser.write( '${data}*{checksum}\r\n'.format( data = payload, checksum = checksum( payload ) ) )
     ser.close()
