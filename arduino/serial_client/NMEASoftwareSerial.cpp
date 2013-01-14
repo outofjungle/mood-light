@@ -18,6 +18,7 @@ NMEASoftwareSerial::readline() {
     this->index[0] = -1;
     this->start = 0;
     this->end = 0;
+    this->truncated = false;
 
     do {
         if (this->available()) {
@@ -61,6 +62,12 @@ NMEASoftwareSerial::readline() {
         chr != '\n'
         && position < sizeof( this->buffer )
     );
+
+    if ( append == true ) {
+        this->end = ( this->end > 0 ) ? this->end : position;
+        this->truncated = true;
+    }
+
     
     *( this->buffer + position ) = '\0';
     this->index[count] = -1;
@@ -145,6 +152,14 @@ NMEASoftwareSerial::is_valid() {
         valid = false;
     }
     
+    if ( this->truncated ) {
+        valid = false;
+    }
+
     return valid;
 }
 
+bool
+NMEASoftwareSerial::is_truncated() {
+    return this->truncated;
+}

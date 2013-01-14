@@ -9,6 +9,7 @@ class NMEASoftwareSerial : public SoftwareSerial {
         int index[32];
         int start;
         int end;
+        bool truncated;
         int itr_pos;
         char itr_value[16];
         
@@ -23,6 +24,7 @@ class NMEASoftwareSerial : public SoftwareSerial {
         char * next();
         void reset();
         bool is_valid();
+        bool is_truncated();
 };
 
 #endif
