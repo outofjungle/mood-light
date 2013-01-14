@@ -17,15 +17,18 @@ void loop() {
     char * field;
     xbee.readline();
 
+    Serial.println( xbee.string() );
 
-
-    Serial.println("--");
-
+    int i = 0;
     do {
         field = xbee.next();
+        Serial.print( i++ );
+        Serial.print( " : " );
         Serial.println( field );
     } while ( strlen( field ) > 0 );
 
+    Serial.print( "Valid : " );
+    Serial.println( xbee.is_valid() );
 
 }
 
