@@ -18,10 +18,11 @@ NMEASoftwareSerial::readline() {
     this->index[0] = -1;
     this->start = 0;
     this->end = 0;
+    this->index_size = 0;
     this->truncated = false;
 
     do {
-        if (this->available()) {
+        if ( this->available() ) {
 
             chr = this->read();
             delimiter = false;
@@ -34,6 +35,9 @@ NMEASoftwareSerial::readline() {
                     break;
                 case ',':
                     delimiter = true;
+                    if ( delimiter && append && ( this->end == 0 ) ) {
+                        this->index_size++;
+                    }
                     break;
                 case '*':
                     this->end = position;
@@ -60,7 +64,7 @@ NMEASoftwareSerial::readline() {
         }
     } while (
         chr != '\n'
-        && position < sizeof( this->buffer )
+        && position < MAX_BUFFER_LENGTH
     );
 
     if ( append == true ) {
@@ -100,17 +104,9 @@ NMEASoftwareSerial::substring( char * str, int strsize, int start, int end ) {
 
 char * 
 NMEASoftwareSerial::next() {
-
-    *this->itr_value  = '\0';
-    if ( itr_pos > ( sizeof( this->index ) - 1 ) ) {
-        return this->itr_value;
-    }
-    
-    if ( this->index[this->itr_pos + 1] != -1 ) {
-        this->substring( this->itr_value, sizeof( this->itr_value ), this->index[this->itr_pos]  + 1, this->index[this->itr_pos + 1] );
+    if ( this->at( this->itr_pos, this->itr_value, MAX_VALUE_LENGTH ) ) {
         this->itr_pos++;
-    }
-
+    }    
     return this->itr_value;
 }
 
@@ -130,8 +126,8 @@ NMEASoftwareSerial::checksum() {
 
 int
 NMEASoftwareSerial::nmea_checksum() {
-    char checksum[4] = "";
-    this->substring( checksum, sizeof( checksum ), this->end  + 1, strlen( this->buffer ) );
+    char checksum[ CHECKSUM_LENGTH ]= "";
+    this->substring( checksum, CHECKSUM_LENGTH, this->end  + 1, strlen( this->buffer ) );
     return atoi( checksum );
 }
 
@@ -163,3 +159,28 @@ bool
 NMEASoftwareSerial::is_truncated() {
     return this->truncated;
 }
+
+int
+NMEASoftwareSerial::size() {
+    return this->index_size;
+}
+
+bool
+NMEASoftwareSerial::at( int position, char * str, int strsize ) {
+    *str  = '\0';
+    int start = this->index[position]  + 1;
+    int end = this->index[position + 1];
+
+    bool result = false;
+    if ( position <= this->size() || end != -1 ) {
+        result = this->substring( str, strsize, start, end );
+    }
+    return result;
+}
+
+char *
+NMEASoftwareSerial::at( int position ) {
+    this->at( position, this->value, MAX_VALUE_LENGTH );
+    return this->value;
+}
+
