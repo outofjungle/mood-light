@@ -16,6 +16,7 @@
 
 #define RX 11
 #define TX 12
+
 #define LED_RED 3
 #define LED_GREEN 5
 #define LED_BLUE 6
@@ -28,7 +29,9 @@ Feed feed = { 0, 0, 0, 0, 0 };
 
 void setup() {
     xbee.begin(9600);
+
     Serial.begin(9600);
+    while (!Serial) ;
     
     pinMode(LED_RED, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
