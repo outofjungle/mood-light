@@ -30,9 +30,6 @@ Feed feed = { 0, 0, 0, 0, 0 };
 void setup() {
     xbee.begin(9600);
 
-    Serial.begin(9600);
-    while (!Serial) ;
-    
     pinMode(LED_RED, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_BLUE, OUTPUT);
@@ -41,10 +38,8 @@ void setup() {
 
 void loop() {
     xbee.readline();
-    Serial.println( xbee.string() );
-
-    if (
-        strcmp( xbee.at( POS_FEED_NAME ), feed_name ) && 
+    if ( 
+        strcmp( xbee.at( POS_FEED_NAME ), feed_name ) == 0 && 
         atol( xbee.at( POS_FEED_ID ) ) == feed_id
     ) {
         feed.sw = atoi( xbee.at( POS_SW ) );
