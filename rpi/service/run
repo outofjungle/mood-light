@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /usr/bin/sync2serial.py -c /etc/cosm.conf -d /dev/ttyAMA0
+exec /usr/bin/sync2serial -c /etc/sync2serial.conf -d /dev/ttyAMA0
