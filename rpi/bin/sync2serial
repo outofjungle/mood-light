@@ -20,7 +20,6 @@ def checksum(sentence):
 if __name__ == '__main__':
 
     logging.basicConfig(
-        filename='/var/log/mood-light/{name}.log'.format( name = os.path.splitext(os.path.basename(__file__))[0] ),
         format='%(asctime)s %(levelname)s: %(message)s',
         level=logging.DEBUG
     )
