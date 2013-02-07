@@ -1,2 +1,2 @@
 #!/bin/sh
-exec multilog /var/log/sync2serial
+exec /usr/bin/envuidgid pi /usr/bin/multilog /var/log/sync2serial
