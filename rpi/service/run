@@ -1,2 +1,2 @@
 #!/bin/sh
-exec /usr/bin/setuidgid pi /usr/bin/sync2serial -c /etc/sync2serial.conf -d /dev/ttyAMA0 -v
+exec /usr/bin/sync2serial -c /etc/sync2serial.conf -d /dev/ttyAMA0 -v

@@ -9,8 +9,7 @@ install-pyserial:
 	cd $(PYSERIAL_DIR); sudo python setup.py install; \
 
 create-log-dir:
-	sudo mkdir /var/log/$(APP_NAME); \
-	sudo chown pi:pi /var/log/$(APP_NAME); \
+	sudo mkdir 0755 /var/log/$(APP_NAME); \
 
 install-service:
 	sudo cp bin/$(APP_NAME) /usr/bin/$(APP_NAME); \
