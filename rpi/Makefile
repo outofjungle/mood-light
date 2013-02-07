@@ -16,8 +16,9 @@ install-service:
 	sudo cp bin/$(APP_NAME) /usr/bin/$(APP_NAME); \
 	sudo chmod 0755 /usr/bin/$(APP_NAME); \
 	sudo mkdir -m0755 -p /service/$(APP_NAME)_daemon; \
-	sudo cp service/run /service/$(APP_NAME)_daemon/run; \
+	sudo cp -r service/* /service/$(APP_NAME)_daemon/; \
 	sudo chmod 0755 /service/$(APP_NAME)_daemon/run; \
+	sudo chmod 0755 /service/$(APP_NAME)_daemon/log/run; \
 	if [ ! -e /etc/$(APP_NAME).conf ]; then \
 		sudo cp conf/$(APP_NAME).conf /etc; \
 		sudo chmod 0644 /etc/$(APP_NAME).conf; \
