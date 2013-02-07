@@ -4,14 +4,17 @@ PYSERIAL_DIR = $(subst .tar.gz,,$(notdir $(PYSERIAL_URL)))
 
 .PHONY: install-pyserial
 
+install-required:
+	sudo apt-get install daemontools daemontools-run
+
 install-pyserial: 
 	curl $(PYSERIAL_URL) | tar -xz; \
 	cd $(PYSERIAL_DIR); sudo python setup.py install; \
 
 create-log-dir:
-	sudo mkdir 0755 /var/log/$(APP_NAME); \
+	sudo mkdir -m0755 -p /var/log/$(APP_NAME); \
 
-install-service:
+install-service: create-log-dir
 	sudo cp bin/$(APP_NAME) /usr/bin/$(APP_NAME); \
 	sudo chmod 0755 /usr/bin/$(APP_NAME); \
 	sudo mkdir -m0755 -p /service/$(APP_NAME)_daemon; \
