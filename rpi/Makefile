@@ -14,10 +14,10 @@ create-log-dir:
 
 install-service:
 	sudo mkdir -m0755 -p /service/sync2serial_daemon; \
-	sudo cp bin/sync2serial.py /usr/bin; \
+	sudo cp bin/sync2serial /usr/bin; \
 	sudo cp service/run /service/sync2serial_daemon/run; \
 	sudo cp conf/sync2serial.conf /etc; \
-	sudo chmod 0755 /usr/bin/sync2serial.py; \
+	sudo chmod 0755 /usr/bin/sync2serial; \
 	sudo chmod 0755 /service/sync2serial_daemon/run; \
 	sudo chmod 0644 /etc/sync2serial.conf; \
 
