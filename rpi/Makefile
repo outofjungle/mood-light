@@ -13,7 +13,7 @@ create-log-dir:
 	sudo chown pi:pi /var/log/$(APP_NAME);\
 
 install-service:
-	sudo -m0755 /service/sync2serial_daemon; \
+	sudo mkdir -m0755 -p /service/sync2serial_daemon; \
 	sudo cp bin/sync2serial.py /usr/bin; \
 	sudo cp service/run /service/sync2serial_daemon/run; \
 	sudo chmod 0755 /usr/bin/sync2serial.py; \
