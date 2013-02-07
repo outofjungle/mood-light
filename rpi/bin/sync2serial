@@ -57,29 +57,34 @@ if __name__ == '__main__':
     FEED = config.get( 'cosm', 'FEED_ID' )
     API_URL = 'http://api.cosm.com/v2/feeds/{feed}.json'.format(feed = FEED)
 
-    request = urllib2.Request( API_URL )
-    request.add_header( 'X-ApiKey', API_KEY )
-    response = urllib2.urlopen( request )
+    while ( True )
 
-    data = json.loads( response.read() )
+        request = urllib2.Request( API_URL )
+        request.add_header( 'X-ApiKey', API_KEY )
+        response = urllib2.urlopen( request )
 
-    payload = [ 'COSM', FEED.__str__() ]
-    for datastream in  data['datastreams']:
-        payload.append( '{key},{value}'.format( key = datastream['id'], value = datastream['current_value'] ) )
+        data = json.loads( response.read() )
 
-    payload = ','.join( payload )
+        payload = [ 'COSM', FEED.__str__() ]
+        for datastream in  data['datastreams']:
+            payload.append( '{key},{value}'.format( key = datastream['id'], value = datastream['current_value'] ) )
 
-    ser = serial.Serial(
-        port = args.device,
-        baudrate = 9600,
-        parity = serial.PARITY_NONE,
-        stopbits = serial.STOPBITS_ONE,
-        bytesize = serial.EIGHTBITS
-    )
+        payload = ','.join( payload )
 
-    time.sleep(1)
+        ser = serial.Serial(
+            port = args.device,
+            baudrate = 9600,
+            parity = serial.PARITY_NONE,
+            stopbits = serial.STOPBITS_ONE,
+            bytesize = serial.EIGHTBITS
+        )
 
-    logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
+        time.sleep(1)
 
-    ser.write( '${data}*{checksum}\r\n'.format( data = payload, checksum = checksum( payload ) ) )
-    ser.close()
+        logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
+
+        ser.write( '${data}*{checksum}\r\n'.format( data = payload, checksum = checksum( payload ) ) )
+        ser.close()
+
+        time.sleep( 10 )
+
