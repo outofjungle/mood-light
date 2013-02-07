@@ -19,11 +19,6 @@ def checksum(sentence):
 
 if __name__ == '__main__':
 
-    logging.basicConfig(
-        format='%(asctime)s %(levelname)s: %(message)s',
-        level=logging.DEBUG
-    )
-
     parser = argparse.ArgumentParser(
         description='Script to fetch Cosm feed and push to serial port'
     )
@@ -32,19 +27,28 @@ if __name__ == '__main__':
         '-c', '--config',
         help='config file name',
         type=argparse.FileType('r'),
-        required=True,
-        dest='config'
+        required=True
     )
 
     parser.add_argument(
         '-d', '--device',
         help='device name',
         type=str,
-        required=True,
-        dest='device'
+        required=True
+    )
+
+    parser.add_argument(
+        '-v', '--verbose',
+        help='verbose output'
     )
 
     args = parser.parse_args()
+
+    logging.basicConfig(
+        format='%(asctime)s %(levelname)s: %(message)s',
+        level= ( args.verbose ) ? logging.DEBUG : logging.ERROR
+    )
+
     config = ConfigParser.ConfigParser()
     config.readfp( args.config )
 
