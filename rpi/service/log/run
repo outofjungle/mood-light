@@ -1,2 +1,2 @@
 #!/bin/sh
-exec setuidgid pi multilog /var/log/sync2serial
+exec multilog /var/log/sync2serial
