@@ -43,6 +43,19 @@ if __name__ == '__main__':
         action="store_true"
     )
 
+    parser.add_argument(
+        '--once',
+        help='run once',
+        action="store_true"
+    )
+
+    parser.add_argument(
+        '--delay',
+        help='refresh delay',
+        type=int,
+        default=5
+    )
+
     args = parser.parse_args()
 
     logging.basicConfig(
@@ -56,6 +69,16 @@ if __name__ == '__main__':
     API_KEY = config.get( 'cosm', 'API_KEY' )
     FEED = config.get( 'cosm', 'FEED_ID' )
     API_URL = 'http://api.cosm.com/v2/feeds/{feed}.json'.format(feed = FEED)
+
+    ser = serial.Serial(
+        port = args.device,
+        baudrate = 9600,
+        parity = serial.PARITY_NONE,
+        stopbits = serial.STOPBITS_ONE,
+        bytesize = serial.EIGHTBITS
+    )
+    time.sleep(1)
+
 
     while ( True ):
 
@@ -71,20 +94,11 @@ if __name__ == '__main__':
 
         payload = ','.join( payload )
 
-        ser = serial.Serial(
-            port = args.device,
-            baudrate = 9600,
-            parity = serial.PARITY_NONE,
-            stopbits = serial.STOPBITS_ONE,
-            bytesize = serial.EIGHTBITS
-        )
-
-        time.sleep(1)
-
         logging.debug( 'Sending to {device}: {data}'.format( device = args.device, data = payload ) )
 
         ser.write( '${data}*{checksum}\r\n'.format( data = payload, checksum = checksum( payload ) ) )
-        ser.close()
 
-        time.sleep( 10 )
-
+        if ( args.once ):
+            break
+        
+        time.sleep( args.delay )
